@@ -1,0 +1,39 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %}Mapache AI · {{ gallery.title }}{% endblock %}
+{% block styles %}{{ block.super }}<link rel="stylesheet" href="{% static 'css/mapache-ai.css' %}">{% endblock %}
+{% block dashboard_content %}
+<section class="gallery-page ai-dashboard" data-ai-status-url="{% url 'mapache_ai_dashboard:status' gallery.uuid %}">
+  <div class="detail-topline"><a href="{% url 'galleries_dashboard:detail' gallery.uuid %}">← {{ gallery.title }}</a><span>MAPACHE AI</span></div>
+  <header class="ai-heading"><div><p class="home-kicker">INTELIGENCIA DEL EVENTO</p><h1><span class="ai-title-mark">✦</span> Mapache AI<span>.</span></h1><p>Encuentra fotografías por rostro o número dentro de esta galería, sin perfiles globales.</p></div><nav class="ai-section-nav" aria-label="Índices de Mapache AI"><a href="#rostros">ROSTROS</a><a href="#numeros">NÚMEROS</a></nav></header>
+
+  {% if not global_ai_enabled %}<div class="ai-global-warning"><strong>Función global desactivada</strong><p>Activa Mapache AI en la configuración del servidor después de instalar el soporte vectorial y los modelos faciales.</p></div>{% endif %}
+
+  <form class="ai-settings-card" method="post">
+    {% csrf_token %}
+    <div class="ai-setting"><div><strong>Activar Mapache AI</strong><p>Permite preparar un índice facial aislado para este evento.</p></div><label class="switch"><input type="checkbox" name="enabled"{% if form.enabled.value %} checked{% endif %}><span></span><b class="sr-only">Activar Mapache AI</b></label></div>
+    <div class="ai-setting"><div><strong>Búsqueda por rostro</strong><p>Habilita “Encuéntrame” en la galería publicada.</p></div><label class="switch"><input type="checkbox" name="face_search_enabled"{% if form.face_search_enabled.value %} checked{% endif %}><span></span><b class="sr-only">Activar búsqueda por rostro</b></label></div>
+    <div class="ai-setting"><div><strong>Búsqueda por número</strong><p>Habilita dorsales preindexados en la galería publicada.</p></div><label class="switch"><input type="checkbox" name="bib_search_enabled"{% if form.bib_search_enabled.value %} checked{% endif %}><span></span><b class="sr-only">Activar búsqueda por número</b></label></div>
+    <div class="ai-coming combined-availability"><span>BÚSQUEDA COMBINADA</span><strong>{% if ai_settings.face_search_enabled and ai_settings.bib_search_enabled %}Disponible{% else %}Requiere rostro y número{% endif %}</strong><p>Ordena por relevancia la unión de ambos motores sin crear un índice adicional.</p></div>
+    <div class="ai-format-grid"><label>Formato{{ form.bib_format }}</label><label>Longitud mínima{{ form.bib_min_length }}</label><label>Longitud máxima{{ form.bib_max_length }}</label></div>
+    {% if form.errors %}<div class="form-error">{{ form.non_field_errors }}{{ form.face_search_enabled.errors }}{{ form.bib_search_enabled.errors }}{{ form.bib_format.errors }}{{ form.bib_min_length.errors }}{{ form.bib_max_length.errors }}</div>{% endif %}
+    <div class="form-actions"><button class="primary-link" type="submit">Guardar configuración</button></div>
+  </form>
+
+  <section class="ai-index-panel" id="rostros">
+    <div class="editorial-heading"><div><p class="home-kicker">ROSTROS</p><h2>Índice facial</h2></div><span class="ai-state state-{{ ai_status.face.status|lower }}" data-ai-state="face">{{ ai_status.face.status_label }}</span></div>
+    <div class="ai-stats"><article><strong data-ai-stat="face.total">{{ ai_status.face.total }}</strong><span>Fotos listas</span></article><article><strong data-ai-stat="face.indexed">{{ ai_status.face.indexed }}</strong><span>Indexadas</span></article><article><strong data-ai-stat="face.detected">{{ ai_status.face.detected }}</strong><span>Rostros</span></article><article><strong data-ai-stat="face.pending">{{ ai_status.face.pending }}</strong><span>Pendientes</span></article></div>
+    <div class="ai-progress-copy"><p>Índice biométrico independiente.</p><div><form method="post" action="{% url 'mapache_ai_dashboard:reindex' gallery.uuid %}">{% csrf_token %}<button class="secondary-link" type="submit">Reindexar rostros</button></form><button class="danger-link" type="button" data-modal-open="delete-ai-index-modal">Borrar índice facial</button></div></div>
+  </section>
+  <section class="ai-index-panel" id="numeros">
+    <div class="editorial-heading"><div><p class="home-kicker">NÚMEROS</p><h2>Índice de dorsales</h2></div><span class="ai-state state-{{ ai_status.bib.status|lower }}" data-ai-state="bib">{{ ai_status.bib.status_label }}</span></div>
+    <div class="ai-stats"><article><strong data-ai-stat="bib.total">{{ ai_status.bib.total }}</strong><span>Fotos listas</span></article><article><strong data-ai-stat="bib.indexed">{{ ai_status.bib.indexed }}</strong><span>Indexadas</span></article><article><strong data-ai-stat="bib.detected">{{ ai_status.bib.detected }}</strong><span>Dorsales</span></article><article><strong data-ai-stat="bib.pending">{{ ai_status.bib.pending }}</strong><span>Pendientes</span></article></div>
+    <div class="ai-progress-copy"><p>Reconocimiento óptico de caracteres sobre las versiones optimizadas.</p><div><form method="post" action="{% url 'mapache_ai_dashboard:reindex_bibs' gallery.uuid %}">{% csrf_token %}<button class="secondary-link" type="submit">Reindexar números</button></form><button class="danger-link" type="button" data-modal-open="delete-bib-index-modal">Borrar índice de números</button></div></div>
+  </section>
+</section>
+
+<div class="modal" id="delete-ai-index-modal" role="dialog" aria-modal="true" aria-labelledby="delete-ai-title" hidden><div class="modal-backdrop" data-modal-close></div><div class="modal-panel compact-modal"><button class="modal-close" type="button" data-modal-close aria-label="Cerrar">×</button><p class="home-kicker">DATOS BIOMÉTRICOS</p><h2 id="delete-ai-title">¿Borrar el índice facial?</h2><p class="modal-copy">Se eliminarán las representaciones biométricas y los estados de indexación de esta galería. Las fotografías no se modificarán.</p><form class="modal-actions" method="post" action="{% url 'mapache_ai_dashboard:delete_index' gallery.uuid %}">{% csrf_token %}<button class="secondary-link" type="button" data-modal-close>Cancelar</button><button class="danger-link" type="submit">Borrar índice</button></form></div></div>
+<div class="modal" id="delete-bib-index-modal" role="dialog" aria-modal="true" aria-labelledby="delete-bib-title" hidden><div class="modal-backdrop" data-modal-close></div><div class="modal-panel compact-modal"><button class="modal-close" type="button" data-modal-close aria-label="Cerrar">×</button><p class="home-kicker">NÚMEROS</p><h2 id="delete-bib-title">¿Borrar el índice de dorsales?</h2><p class="modal-copy">Se eliminarán las detecciones OCR y sus estados. Las fotografías y rostros no se modificarán.</p><form class="modal-actions" method="post" action="{% url 'mapache_ai_dashboard:delete_bib_index' gallery.uuid %}">{% csrf_token %}<button class="secondary-link" type="button" data-modal-close>Cancelar</button><button class="danger-link" type="submit">Borrar índice</button></form></div></div>
+{% endblock %}
+{% block scripts %}{{ block.super }}<script src="{% static 'js/dashboard/mapache-ai-status.js' %}" defer></script>{% endblock %}

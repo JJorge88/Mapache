@@ -1,0 +1,5 @@
+<nav class="gallery-mobile-nav" aria-label="Acciones de la galería">
+  <a class="{% if mobile_active == 'gallery' %}is-active{% endif %}" href="{% url 'galleries_public:detail' gallery.slug %}#galeria"><span aria-hidden="true">▦</span>GALERÍA</a>
+  {% if gallery.ai_settings.enabled %}{% if gallery.ai_settings.face_search_enabled %}<a class="{% if mobile_active == 'find' %}is-active{% endif %}" href="{% url 'mapache_ai_public:find_me' gallery.slug %}"><span aria-hidden="true">✦</span>ENCONTRARME</a>{% elif gallery.ai_settings.bib_search_enabled %}<a class="{% if mobile_active == 'find' %}is-active{% endif %}" href="{% url 'mapache_ai_public:find_me_number' gallery.slug %}"><span aria-hidden="true">✦</span>ENCONTRARME</a>{% endif %}{% endif %}
+  {% if gallery.allow_gallery_download %}<form method="post" action="{% url 'galleries_public:download_request' gallery.slug %}">{% csrf_token %}<button type="submit"><span aria-hidden="true">↓</span>DESCARGAR</button></form>{% endif %}
+</nav>

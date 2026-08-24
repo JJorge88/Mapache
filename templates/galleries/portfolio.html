@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static media_delivery %}
+
+{% block title %}Eventos · Mapache Studio{% endblock %}
+{% block body_class %}public-page site-page{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{% static 'css/public-site.css' %}?v=9"><link rel="stylesheet" href="{% static 'css/public-pages.css' %}?v=9">{% endblock %}
+
+{% block content %}
+{% include "website/partials/header.html" with active_page="events" %}
+<main class="events-index">
+  <header class="events-heading site-shell">
+    <p class="site-eyebrow">MAPACHE / EVENTOS</p>
+    <h1>Eventos<span>.</span></h1>
+    <p>Encuentra tu evento y entra a su galería. Los eventos privados solicitarán su código de acceso.</p>
+    <form class="events-search" method="get" role="search">
+      <label class="sr-only" for="events-query">Buscar evento</label>
+      <span aria-hidden="true">⌕</span>
+      <input id="events-query" name="q" type="search" value="{{ query }}" placeholder="Buscar galería o evento…" autocomplete="off">
+      {% if query %}<a href="{% url 'galleries_public:portfolio' %}">Limpiar</a>{% endif %}
+    </form>
+  </header>
+
+  <section class="events-grid site-shell" aria-label="Eventos disponibles">
+    {% for gallery in galleries %}
+      <article class="event-card{% if gallery.visibility == 'PRIVATE_PIN' %} is-private{% endif %}">
+        <a href="{% url 'galleries_public:detail' gallery.slug %}">
+          {% if gallery.visibility == 'PRIVATE_PIN' %}<span class="event-private-art" aria-hidden="true"><img src="{% static 'images/mapache-studio-logo.png' %}" alt="" width="849" height="1117"></span>{% else %}{% if gallery.cover_photo %}{% photo_delivery_url gallery.cover_photo 'thumbnail' as cover_url %}{% endif %}{% if cover_url %}<img src="{{ cover_url }}" alt="Portada de {{ gallery.title }}" width="{{ gallery.cover_photo.width|default:1200 }}" height="{{ gallery.cover_photo.height|default:800 }}" loading="lazy" decoding="async">{% else %}<span class="event-private-art" aria-hidden="true"><img src="{% static 'images/mapache-studio-logo.png' %}" alt="" width="849" height="1117"></span>{% endif %}{% endif %}
+          <span class="event-card-shade" aria-hidden="true"></span>
+          {% if gallery.visibility == 'PRIVATE_PIN' %}<span class="event-lock" aria-label="Evento privado con código de acceso">▣</span>{% endif %}
+          <span class="event-card-badges"><small>{% if gallery.visibility == 'PRIVATE_PIN' %}EVENTO PRIVADO{% else %}EVENTO PÚBLICO{% endif %}</small>{% if gallery.ai_available %}<small class="has-ai">✦ MAPACHE AI</small>{% endif %}</span>
+          <span class="event-card-copy"><small>{{ gallery.event_date|date:'d M Y'|default:'EVENTO MAPACHE' }} · {{ gallery.photo_count }} FOTO{{ gallery.photo_count|pluralize:'S' }}</small><strong>{{ gallery.title }}</strong><em>{% if gallery.visibility == 'PRIVATE_PIN' %}Acceso con código{% else %}Abrir evento{% endif %} ↗</em></span>
+        </a>
+      </article>
+    {% empty %}
+      <div class="events-empty"><h2>{% if query %}No encontramos ese evento.{% else %}Los próximos eventos aparecerán aquí.{% endif %}</h2>{% if query %}<a href="{% url 'galleries_public:portfolio' %}">Ver todos los eventos</a>{% endif %}</div>
+    {% endfor %}
+  </section>
+</main>
+{% include "website/partials/footer.html" %}
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/public-site.js' %}?v=2" defer></script>{% endblock %}

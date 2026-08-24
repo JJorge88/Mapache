@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Galería privada · Mapache Studio{% endblock %}
+{% block body_class %}public-page site-page{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{% static 'css/public-site.css' %}?v=5"><link rel="stylesheet" href="{% static 'css/gallery-public.css' %}?v=5">{% endblock %}
+{% block content %}
+<main class="gallery-access-page">
+  <a class="gallery-access-wordmark" href="{% url 'website:home' %}" aria-label="Mapache Studio, inicio"><img src="{% static 'images/mapache-studio-logo.png' %}" alt="" width="849" height="1117"></a>
+  <section class="gallery-access-content" aria-labelledby="access-title">
+    <p class="site-eyebrow">GALERÍA PRIVADA</p>
+    <h1 id="access-title">Ingresa el código<br>para continuar.</h1>
+    <form class="gallery-access-form" method="post" novalidate>
+      {% csrf_token %}
+      {% if form.non_field_errors %}<div class="gallery-access-error" role="alert">{{ form.non_field_errors|striptags }}</div>{% endif %}
+      <label for="{{ form.pin.id_for_label }}">CÓDIGO DE ACCESO</label>
+      {{ form.pin }}
+      {% for error in form.pin.errors %}<p class="gallery-access-error">{{ error }}</p>{% endfor %}
+      <button type="submit"{% if is_blocked %} disabled{% endif %}>ENTRAR</button>
+    </form>
+  </section>
+  <p class="gallery-access-footer">ACCESO PROTEGIDO · MAPACHE STUDIO</p>
+</main>
+{% endblock %}

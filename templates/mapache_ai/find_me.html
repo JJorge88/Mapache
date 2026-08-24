@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Encuentra tus fotos · {{ gallery.title }}{% endblock %}
+{% block meta_description %}Encuentra tus fotografías de {{ gallery.title }} con Mapache AI usando una foto o tu dorsal.{% endblock %}
+{% block body_class %}public-page site-page ai-public-page{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{% static 'css/public-site.css' %}?v=9"><link rel="stylesheet" href="{% static 'css/gallery-public.css' %}?v=9"><link rel="stylesheet" href="{% static 'css/mapache-ai.css' %}?v=10">{% endblock %}
+{% block content %}
+{% include "mapache_ai/partials/public_header.html" %}
+<main class="ai-find-experience site-shell">
+  <header class="ai-find-heading">
+    <div><p class="site-eyebrow">✦ MAPACHE AI / {{ gallery.title|upper }}</p><h1>Encuentra tus fotos<span>.</span></h1></div>
+    <p>Elige cómo quieres buscar. Solo comparamos tu información con las fotografías de este evento.</p>
+  </header>
+
+  <div class="ai-find-tabs">{% include "mapache_ai/partials/search_options.html" with active_search="face" %}</div>
+
+  {% if face_enabled %}<section class="ai-find-panel" id="buscar" aria-labelledby="face-title">
+    <div class="ai-find-copy"><span class="ai-step">01</span><p class="site-eyebrow">BÚSQUEDA POR ROSTRO</p><h2 id="face-title">Sube una<br>foto clara.</h2><p>De frente, con buena luz y una sola persona. Así obtendrás resultados más precisos.</p><ul><li>Buena iluminación</li><li>Rostro visible</li><li>Una sola persona</li></ul><details><summary>Privacidad y uso de tu foto</summary><p>La imagen se procesa temporalmente para comparar tu rostro únicamente con {{ gallery.title }}. No crea un perfil y no se conserva en la galería.</p></details></div>
+    <form class="ai-editorial-form ai-find-form" method="post" enctype="multipart/form-data" data-face-search-form>{% csrf_token %}
+      {% if unavailable %}<div class="ai-unavailable"><strong>Esta búsqueda no está disponible en este momento.</strong><p>La galería normal continúa disponible.</p></div>{% endif %}
+      {% if form.non_field_errors %}<div class="ai-form-error" role="alert">{{ form.non_field_errors|striptags }}</div>{% endif %}
+      <div class="face-upload face-upload-refined" data-photo-picker><span aria-hidden="true">＋</span><strong data-file-label>Agrega una foto tuya</strong><small id="face-photo-help">De frente y con buena luz · máximo {{ query_max_mb }} MB</small>{{ form.query_image }}<input type="file" name="query_image" accept="image/*" capture="user" data-camera-input aria-label="Tomar una foto con la cámara"><div class="face-source-actions"><button type="button" data-camera-source><span aria-hidden="true">◎</span>TOMAR FOTO</button><button type="button" data-library-source><span aria-hidden="true">↑</span>ELEGIR FOTO</button></div></div>
+      {% if form.query_image.errors %}<div class="ai-form-error">{{ form.query_image.errors|striptags }}</div>{% endif %}
+      <label class="consent-check">{{ form.consent }}<span>Acepto el uso temporal de esta imagen para buscar dentro de este evento.</span></label>
+      {% if form.consent.errors %}<div class="ai-form-error">{{ form.consent.errors|striptags }}</div>{% endif %}
+      <button class="ai-primary-button" type="submit">ENCONTRAR MIS FOTOS <span aria-hidden="true">→</span></button>
+      <div class="ai-searching" data-searching hidden><span class="ai-search-line" aria-hidden="true"></span><strong>Estamos buscándote.</strong><p>Comparando tu foto con el evento…</p></div>
+    </form>
+  </section>{% else %}<section class="ai-find-panel"><div class="ai-find-copy"><span class="ai-step">01</span><p class="site-eyebrow">BÚSQUEDA POR DORSAL</p><h2>Escribe tu número.</h2><p>Revisaremos únicamente las fotografías de este evento.</p></div><form class="ai-editorial-form ai-number-form ai-find-form" method="post" action="{% url 'mapache_ai_public:find_me_number' gallery.slug %}">{% csrf_token %}{{ bib_form.query_number }}<button class="ai-primary-button" type="submit">ENCONTRAR MIS FOTOS <span>→</span></button></form></section>{% endif %}
+
+  <footer class="ai-find-footer"><span>PROCESAMIENTO PRIVADO</span><span>SOLO ESTE EVENTO</span><a href="#fotos">Ver todas las fotografías ↓</a></footer>
+  <section class="ai-number-gallery ai-find-gallery" id="fotos" aria-labelledby="face-gallery-title">
+    <header class="ai-number-gallery-heading"><div><p class="site-eyebrow">GALERÍA COMPLETA / {{ gallery.title|upper }}</p><h2 id="face-gallery-title">Todas las fotografías.</h2></div><a href="#buscar">VOLVER A BUSCAR ↑</a></header>
+    {% if photos %}{% include "mapache_ai/partials/result_grid.html" %}{% else %}<div class="ai-number-empty"><p>Esta galería todavía no tiene fotografías disponibles.</p></div>{% endif %}
+  </section>
+</main>
+<div class="ai-camera-modal" data-camera-modal hidden role="dialog" aria-modal="true" aria-labelledby="camera-title">
+  <div class="ai-camera-backdrop" data-camera-close></div>
+  <section class="ai-camera-dialog">
+    <header><div><p class="site-eyebrow">✦ CÁMARA</p><h2 id="camera-title">Toma tu foto.</h2></div><button type="button" data-camera-close aria-label="Cerrar cámara">×</button></header>
+    <div class="ai-camera-preview" data-camera-preview><video data-camera-video autoplay playsinline muted></video><img data-camera-photo hidden alt="Vista previa de la foto capturada"><div class="ai-camera-guide" aria-hidden="true"></div><span data-camera-review-label hidden>VISTA PREVIA</span></div>
+    <p class="ai-camera-help" data-camera-help>Mira de frente, procura tener buena luz y coloca tu rostro dentro de la guía.</p>
+    <p class="ai-camera-error" data-camera-error hidden role="alert"></p>
+    <footer data-camera-live-actions><button type="button" class="ai-camera-cancel" data-camera-close>CANCELAR</button><button type="button" class="ai-camera-shutter" data-camera-shutter><span aria-hidden="true"></span> CAPTURAR FOTO</button></footer>
+    <footer data-camera-review-actions hidden><button type="button" class="ai-camera-cancel" data-camera-retake>TOMAR OTRA</button><button type="button" class="ai-camera-shutter" data-camera-use>USAR ESTA FOTO <span aria-hidden="true">→</span></button></footer>
+    <canvas data-camera-canvas hidden></canvas>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/gallery-public.js' %}?v=2" defer></script><script src="{% static 'js/mapache-ai-search.js' %}?v=4" defer></script>{% endblock %}

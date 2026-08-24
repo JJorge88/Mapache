@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Servicios · Mapache Studio{% endblock %}
+{% block body_class %}public-page site-page{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{% static 'css/public-site.css' %}?v=8"><link rel="stylesheet" href="{% static 'css/public-pages.css' %}?v=8">{% endblock %}
+{% block content %}
+{% include "website/partials/header.html" with active_page="services" %}
+<main class="services-v2">
+  <section class="services-v2-hero" aria-labelledby="services-page-title">
+    <img src="{% static 'images/public/produccion-estadio-1600.webp' %}" srcset="{% static 'images/public/produccion-estadio-800.webp' %} 800w, {% static 'images/public/produccion-estadio-1600.webp' %} 1600w" sizes="100vw" alt="Producción cinematográfica durante un evento deportivo" width="1600" height="914" fetchpriority="high" decoding="async">
+    <span class="services-v2-shade" aria-hidden="true"></span>
+    <div class="site-shell"><p class="site-eyebrow">SERVICIOS</p><h1 id="services-page-title">Soluciones Audiovisuales<br><span>de Alto Nivel.</span></h1><p>Del instante decisivo a una experiencia visual completa.</p></div>
+  </section>
+
+  <section class="services-v2-catalog site-shell" aria-labelledby="services-catalog-title">
+    <header><p class="site-eyebrow">LO QUE HACEMOS</p><h2 id="services-catalog-title">Cada proyecto exige<br>una mirada distinta.</h2></header>
+    <div class="services-v2-grid">
+      <article class="services-v2-card is-featured"><span>01</span><i aria-hidden="true">◎</i><h3>Fotografía deportiva</h3><p>Acción, esfuerzo y emoción observados desde el lugar donde realmente ocurren.</p><small>FOTOGRAFÍA · COBERTURA</small></article>
+      <article class="services-v2-card"><span>02</span><i aria-hidden="true">▣</i><h3>Producción audiovisual</h3><p>Narrativas en movimiento, desde la planificación hasta el montaje final.</p><small>VIDEO · 4K</small></article>
+      <article class="services-v2-card"><span>03</span><i aria-hidden="true">✦</i><h3>Cobertura aérea</h3><p>Escala, territorio y movimiento desde perspectivas de alto impacto.</p><small>DRONE · FPV</small></article>
+      <article class="services-v2-card"><span>04</span><i aria-hidden="true">◇</i><h3>Fotografía comercial</h3><p>Imágenes precisas para productos, campañas y marcas con una identidad clara.</p><small>MARCA · CAMPAÑA</small></article>
+      <article class="services-v2-card"><span>05</span><i aria-hidden="true">＋</i><h3>Contenido digital</h3><p>Piezas coherentes para plataformas, lanzamientos y comunidades.</p><small>SOCIAL · CONTENIDO</small></article>
+      <article class="services-v2-card"><span>06</span><i aria-hidden="true">✦</i><h3>Galerías + Mapache AI</h3><p>Entrega privada, búsqueda inteligente por rostro o dorsal y descargas listas para cada participante.</p><small>PLATAFORMA · IA</small></article>
+    </div>
+  </section>
+
+  <section class="services-process"><div class="site-shell"><header><p class="site-eyebrow">PROCESO</p><h2>De la idea<br>a la entrega.</h2></header><ol><li><span>01</span><strong>Dirección</strong><p>Definimos la intención, el ritmo y las necesidades reales del proyecto.</p></li><li><span>02</span><strong>Producción</strong><p>Ejecutamos con precisión, equipo profesional y atención al momento.</p></li><li><span>03</span><strong>Entrega</strong><p>Organizamos y presentamos el material en una experiencia privada y cuidada.</p></li></ol></div></section>
+
+  <section class="services-v2-cta"><div class="site-shell"><div><p class="site-eyebrow">NUEVO PROYECTO</p><h2>Construyamos<br><span>la experiencia.</span></h2></div><a href="{% url 'website:contact' %}">Cotizar un proyecto <span aria-hidden="true">→</span></a></div></section>
+</main>
+{% include "website/partials/footer.html" %}
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/public-site.js' %}" defer></script>{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "dashboard/base.html" %}
+{% load media_delivery %}
+
+{% block dashboard_content %}
+<section class="dashboard-home" aria-labelledby="dashboard-heading">
+  <div class="home-topline">
+    <p>ESTUDIO / INICIO</p>
+    <p>{% now "d.m.Y" %}</p>
+  </div>
+  <div class="home-hero">
+    <div>
+      <p class="home-kicker">BIENVENIDO DE NUEVO</p>
+      <h1 id="dashboard-heading">Buenos días<span>.</span></h1>
+      <p class="home-lead">Todo listo para crear y entregar.</p>
+    </div>
+    <a class="new-gallery active-button" href="{% url 'galleries_dashboard:create' %}"><span>+</span> Nueva galería</a>
+  </div>
+  <div class="stats-grid dashboard-metrics">
+    <article class="stat-card"><span>01</span><strong>{{ total_galleries }}</strong><p>Galerías</p></article>
+    <article class="stat-card"><span>02</span><strong>{{ total_photos }}</strong><p>Fotografías</p></article>
+    <article class="stat-card"><span>03</span><strong>{{ ai_galleries }}</strong><p>Con Mapache AI</p></article>
+    <article class="stat-card"><span>04</span><strong>{{ published_galleries }}</strong><p>Publicadas</p></article>
+  </div>
+  {% if recent_galleries %}
+  <section class="recent-section">
+    <div class="editorial-heading"><div><p class="home-kicker">TRABAJO RECIENTE</p><h2>Galerías recientes</h2></div><a href="{% url 'galleries_dashboard:list' %}">Ver todas →</a></div>
+    <div class="recent-gallery-grid">
+      {% for gallery in recent_galleries %}
+      <article class="recent-gallery-card">
+        <a class="recent-gallery-cover" href="{% url 'galleries_dashboard:detail' gallery.uuid %}">{% if gallery.cover_photo.processing_status == 'READY' and gallery.cover_photo.thumbnail_file %}{% photo_delivery_url gallery.cover_photo 'thumbnail' 'dashboard' as cover_url %}{% if cover_url %}<img src="{{ cover_url }}" alt="Portada de {{ gallery.title }}">{% endif %}{% else %}<span>{{ gallery.title|first|upper }}</span>{% endif %}</a>
+        <div class="recent-gallery-info"><div><a href="{% url 'galleries_dashboard:detail' gallery.uuid %}"><strong>{{ gallery.title }}</strong></a><p>{{ gallery.event_date|date:"d M Y"|upper|default:"SIN FECHA" }} · {{ gallery.photo_count }} FOTOS</p></div><div class="context-menu"><button type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Acciones para {{ gallery.title }}">•••</button><div class="context-menu-panel" role="menu"><a role="menuitem" href="{% url 'galleries_dashboard:detail' gallery.uuid %}">Ver</a><a role="menuitem" href="{% url 'galleries_dashboard:edit' gallery.uuid %}">Editar</a><button type="button" role="menuitem" data-copy-text="{{ gallery.slug }}" data-copy-url="{% url 'galleries_dashboard:share' gallery.uuid %}">Copiar enlace</button>{% if gallery.status != 'ARCHIVED' %}<form method="post" action="{% url 'galleries_dashboard:archive' gallery.uuid %}">{% csrf_token %}<button role="menuitem" type="submit">Archivar</button></form>{% endif %}</div></div></div>
+        <div class="recent-gallery-badges"><span class="status-badge status-{{ gallery.status|lower }}">{{ gallery.get_status_display }}</span><span class="status-badge">{% if gallery.visibility == 'PRIVATE_PIN' %}PIN{% else %}{{ gallery.get_visibility_display }}{% endif %}</span></div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% else %}
+  <section class="first-use"><p class="home-kicker">PRIMER PROYECTO</p><h2>Crea tu primera galería.</h2><p>Sube una historia, ordénala y compártela desde un solo lugar.</p><a class="primary-link" href="{% url 'galleries_dashboard:create' %}">Crear galería <span>→</span></a></section>
+  {% endif %}
+</section>
+{% endblock %}

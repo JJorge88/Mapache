@@ -1,0 +1,7 @@
+{% load static %}
+<footer class="site-footer">
+  <div class="site-shell site-footer-grid">
+    <div><a class="site-wordmark" href="{% url 'website:home' %}" aria-label="Mapache Studio, inicio"><img src="{% static 'images/mapache-studio-logo.png' %}" alt="" width="849" height="1117"></a><p>Imagen, tecnología y experiencias<br>creadas en Guatemala.</p><small>© 2026 Mapache Studio. Todos los derechos reservados.</small></div>
+    <nav aria-label="Enlaces del pie"><a href="{% url 'website:services' %}">Servicios</a><a href="{% url 'website:studio' %}">Estudio</a><a href="{% url 'galleries_public:portfolio' %}">Eventos</a><a href="{% url 'website:contact' %}">Contacto</a><a href="{% url 'accounts:dashboard' %}">Panel de estudio</a></nav>
+  </div>
+</footer>

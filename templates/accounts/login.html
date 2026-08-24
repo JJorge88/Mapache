@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Panel de estudio · Mapache{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{% static 'css/accounts.css' %}?v=4">{% endblock %}
+
+{% block content %}
+<main class="auth-layout">
+  <a class="auth-wordmark" href="{% url 'website:home' %}" aria-label="Volver al inicio"><img src="{% static 'images/mapache-studio-logo.png' %}" alt="" width="849" height="1117"></a>
+  <section class="auth-card" aria-labelledby="login-title">
+    <p class="auth-kicker">ACCESO PRIVADO</p>
+    <h1 id="login-title">Panel de estudio</h1>
+    <p class="auth-intro">Ingresa tus credenciales para continuar.</p>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="form-error" role="alert">{{ form.non_field_errors|striptags }}</div>
+      {% endif %}
+      <div class="field">
+        <label for="{{ form.username.id_for_label }}">Usuario / correo</label>
+        {{ form.username }}
+      </div>
+      <div class="field">
+        <label for="{{ form.password.id_for_label }}">Contraseña</label>
+        {{ form.password }}
+      </div>
+      {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+      <button class="primary-button" type="submit">Entrar <span aria-hidden="true">→</span></button>
+    </form>
+  </section>
+  <p class="auth-footer">MAPACHE STUDIO · GUATEMALA</p>
+</main>
+{% endblock %}

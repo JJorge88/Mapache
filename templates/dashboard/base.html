@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Panel · Mapache Studio{% endblock %}
+{% block body_class %}dashboard-page{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{% static 'css/dashboard.css' %}"><link rel="stylesheet" href="{% static 'css/gallery.css' %}"><link rel="stylesheet" href="{% static 'css/photo-grid.css' %}"><link rel="stylesheet" href="{% static 'css/modal.css' %}"><link rel="stylesheet" href="{% static 'css/dashboard-v3.css' %}?v=3.2">{% endblock %}
+
+{% block content %}
+<div class="dashboard-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <a class="dashboard-wordmark" href="{% url 'accounts:dashboard' %}" aria-label="Mapache Studio, inicio del panel"><img src="{% static 'images/mapache-studio-logo.png' %}" alt="" width="849" height="1117"></a>
+      <button class="menu-close" type="button" data-menu-close aria-label="Cerrar menú">×</button>
+    </div>
+    <nav class="sidebar-nav" aria-label="Navegación principal">
+      <p class="nav-label">ESTUDIO</p>
+      <a class="nav-item{% if request.resolver_match.namespace == 'accounts' %} active{% endif %}" href="{% url 'accounts:dashboard' %}"{% if request.resolver_match.namespace == 'accounts' %} aria-current="page"{% endif %}><span class="nav-index">01</span> Inicio</a>
+      <a class="nav-item{% if request.resolver_match.namespace == 'galleries_dashboard' %} active{% endif %}" href="{% url 'galleries_dashboard:list' %}"{% if request.resolver_match.namespace == 'galleries_dashboard' %} aria-current="page"{% endif %}><span class="nav-index">02</span> Galerías</a>
+      <a class="nav-item{% if request.resolver_match.namespace == 'mapache_ai_dashboard' %} active{% endif %}" href="{% url 'mapache_ai_entry' %}"{% if request.resolver_match.namespace == 'mapache_ai_dashboard' %} aria-current="page"{% endif %}><span class="nav-index">03</span> Mapache AI</a>
+      <span class="nav-item future" aria-disabled="true"><span class="nav-index">04</span> Mensajes <small>Próximamente</small></span>
+    </nav>
+    <div class="sidebar-bottom">
+      <span class="nav-item future" aria-disabled="true"><span class="nav-index">05</span> Configuración</span>
+      <div class="user-block">
+        <span class="avatar" aria-hidden="true">{{ request.user.get_full_name|default:request.user.email|default:request.user.username|first|upper }}</span>
+        <div><strong>{% if request.user.get_full_name %}{{ request.user.get_full_name }}{% else %}Cuenta de estudio{% endif %}</strong><small>{{ request.user.email|default:request.user.username }}</small><small class="user-role">{{ request.user.get_role_display }}</small></div>
+        <form method="post" action="{% url 'accounts:logout' %}">
+          {% csrf_token %}
+          <button class="logout-button" type="submit" aria-label="Cerrar sesión" title="Cerrar sesión">Salir</button>
+        </form>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-backdrop" data-menu-close></div>
+  <main class="dashboard-main">
+    <header class="mobile-header">
+      <a class="dashboard-wordmark" href="{% url 'accounts:dashboard' %}" aria-label="Mapache Studio, inicio del panel"><img src="{% static 'images/mapache-studio-logo.png' %}" alt="" width="849" height="1117"></a>
+      <button class="menu-open" type="button" data-menu-open aria-controls="sidebar" aria-expanded="false">Menú</button>
+    </header>
+    {% if messages %}
+      <div class="message-stack" aria-live="polite">
+        {% for message in messages %}<p class="message {{ message.tags }}">{{ message }}</p>{% endfor %}
+      </div>
+    {% endif %}
+    {% block dashboard_content %}{% endblock %}
+  </main>
+</div>
+{% endblock %}
+
+{% block scripts %}<script src="{% static 'js/dashboard.js' %}?v=3.1" defer></script><script src="{% static 'js/dashboard/modal.js' %}" defer></script><script src="{% static 'js/dashboard/context-menu.js' %}" defer></script>{% endblock %}

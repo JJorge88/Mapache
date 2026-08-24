@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Buscar por número · {{ gallery.title }}{% endblock %}
+{% block body_class %}public-page site-page ai-public-page{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{% static 'css/public-site.css' %}?v=9"><link rel="stylesheet" href="{% static 'css/gallery-public.css' %}?v=9"><link rel="stylesheet" href="{% static 'css/mapache-ai.css' %}?v=10">{% endblock %}
+{% block content %}
+{% include "mapache_ai/partials/public_header.html" %}
+<main class="ai-number-experience site-shell">
+  <section class="ai-number-panel" aria-labelledby="bib-title">
+    <div class="ai-number-intro"><p class="site-eyebrow">✦ MAPACHE AI / {{ gallery.title|upper }}</p><h1>Encuentra<br>tus fotos.</h1><p>Escribe tu dorsal y revisaremos únicamente las fotografías de este evento.</p></div>
+    <form class="ai-editorial-form ai-number-form ai-number-card" method="post">{% csrf_token %}{% if form.non_field_errors %}<div class="ai-form-error" role="alert">{{ form.non_field_errors|striptags }}</div>{% endif %}<p class="site-eyebrow">BÚSQUEDA POR DORSAL</p><h2 id="bib-title">¿Cuál es tu número?</h2><label for="{{ form.query_number.id_for_label }}">ESCRIBE TU DORSAL</label>{{ form.query_number }}{% if form.query_number.errors %}<div class="ai-form-error">{{ form.query_number.errors|striptags }}</div>{% endif %}<p class="ai-number-hint">Un solo dígito también encuentra dorsales que lo contienen. Ejemplo: 1 puede encontrar 017 o 212.</p><button class="ai-primary-button" type="submit">ENCONTRAR MIS FOTOS <span aria-hidden="true">→</span></button></form>
+  </section>
+  {% if gallery.ai_settings.face_search_enabled %}<div class="ai-number-alternatives"><p class="site-eyebrow">OTRAS FORMAS DE BÚSQUEDA</p>{% include "mapache_ai/partials/search_options.html" with active_search="bib" %}</div>{% endif %}
+  <section class="ai-number-gallery" id="fotos" aria-labelledby="number-gallery-title">
+    <header class="ai-number-gallery-heading">
+      <div><p class="site-eyebrow">{% if search_performed %}RESULTADOS / DORSAL #{{ search_session.normalized_number }}{% else %}GALERÍA COMPLETA / {{ gallery.title|upper }}{% endif %}</p><h2 id="number-gallery-title">{% if search_performed %}{% if photos %}{{ photos|length }} momento{{ photos|length|pluralize }} encontrado{{ photos|length|pluralize }}.{% else %}Sin coincidencias.{% endif %}{% else %}Todas las fotografías.{% endif %}</h2></div>
+      {% if search_performed %}<a href="{% url 'mapache_ai_public:find_me_number' gallery.slug %}#fotos">VER TODAS LAS FOTOGRAFÍAS</a>{% endif %}
+    </header>
+    {% if search_performed and not photos %}<div class="ai-number-empty"><p>No encontramos fotografías relacionadas con este dorsal.</p><a href="#bib-title">PROBAR OTRO NÚMERO ↑</a></div>{% else %}{% include "mapache_ai/partials/result_grid.html" with animate_results=search_performed %}{% endif %}
+  </section>
+</main>
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/gallery-public.js' %}?v=2" defer></script>{% endblock %}

@@ -1,0 +1,18 @@
+.auth-layout { min-height: 100vh; display: grid; grid-template-rows: auto 1fr auto; padding: 38px 44px; background: radial-gradient(circle at 18% 72%, #22221f 0, #111 28%, #080808 62%); }
+.auth-wordmark { width: 72px; height: 94px; display: block; justify-self: start; }
+.auth-wordmark img { width: 100%; height: 100%; display: block; object-fit: contain; }
+.auth-card { width: min(100%, 470px); align-self: center; justify-self: end; margin-right: clamp(0px, 8vw, 140px); padding: 54px 0; }
+.auth-kicker { margin: 0 0 25px; color: var(--accent); font-size: .66rem; font-weight: 700; letter-spacing: .24em; }
+.auth-card h1 { margin: 0; font-size: clamp(3.3rem, 6vw, 6.2rem); line-height: .88; letter-spacing: -.07em; font-weight: 650; }
+.auth-intro { margin: 17px 0 40px; color: var(--muted); font-size: .9rem; }
+.field { margin-bottom: 23px; }
+.field label { display: block; margin-bottom: 9px; color: var(--muted); font-size: .72rem; letter-spacing: .04em; }
+.field input { width: 100%; height: 56px; padding: 0 16px; border: 1px solid var(--border); border-radius: 0; background: #0d0d0d; color: var(--text); transition: border-color .2s ease; }
+.field input::placeholder { color: #5e5e5e; }
+.field input:focus { border-color: #666; outline: none; }
+.form-error { margin-bottom: 22px; padding: 13px 15px; border-left: 2px solid var(--accent); background: var(--surface); color: #d8d8d5; font-size: .78rem; }
+.primary-button { width: 100%; height: 56px; margin-top: 8px; border: 0; border-radius: 2px; display: flex; align-items: center; justify-content: space-between; padding: 0 18px; background: var(--accent); color: #0b0b0b; font-weight: 750; cursor: pointer; transition: background .2s ease, transform .2s ease; }
+.primary-button:hover { background: #ffe817; transform: translateY(-1px); }
+.primary-button span { font-size: 1.2rem; }
+.auth-footer { align-self: end; margin: 0; color: #5b5b5b; font-size: .58rem; letter-spacing: .2em; }
+@media (max-width: 700px) { .auth-layout { padding: 26px 20px; background-position: center; } .auth-card { justify-self: center; margin-right: 0; padding: 60px 0 30px; } }

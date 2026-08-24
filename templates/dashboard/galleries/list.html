@@ -1,0 +1,26 @@
+{% extends "dashboard/base.html" %}
+{% load media_delivery %}
+
+{% block title %}Galerías · Mapache Studio{% endblock %}
+{% block dashboard_content %}
+<section class="gallery-page gallery-index">
+  <header class="page-heading">
+    <div><p class="home-kicker">ESTUDIO / GALERÍAS</p><h1>Galerías<span>.</span></h1></div>
+    <a class="primary-link" href="{% url 'galleries_dashboard:create' %}"><span>+</span> Nueva galería</a>
+  </header>
+  <form class="gallery-tools" method="get">
+    <nav class="filter-nav" aria-label="Filtros de galerías">
+      <a href="?{% if query %}q={{ query|urlencode }}&{% endif %}status=all"{% if selected_filter == 'all' %} class="selected"{% endif %}>Todas</a><a href="?{% if query %}q={{ query|urlencode }}&{% endif %}status=published"{% if selected_filter == 'published' %} class="selected"{% endif %}>Publicadas</a><a href="?{% if query %}q={{ query|urlencode }}&{% endif %}status=private"{% if selected_filter == 'private' %} class="selected"{% endif %}>Privadas</a><a href="?{% if query %}q={{ query|urlencode }}&{% endif %}status=draft"{% if selected_filter == 'draft' %} class="selected"{% endif %}>Borradores</a><a href="?{% if query %}q={{ query|urlencode }}&{% endif %}status=archived"{% if selected_filter == 'archived' %} class="selected"{% endif %}>Archivadas</a>
+    </nav>
+    <div class="search-field"><label class="sr-only" for="gallery-search">Buscar</label><input id="gallery-search" name="q" value="{{ query }}" placeholder="Buscar galería"><input type="hidden" name="status" value="{{ selected_filter }}"><button type="submit">Buscar</button></div>
+  </form>
+  <div class="photographic-gallery-grid">
+    {% for gallery in galleries %}
+    <article class="photographic-gallery-card">
+      <a class="photographic-cover" href="{% url 'galleries_dashboard:detail' gallery.uuid %}">{% if gallery.cover_photo.processing_status == 'READY' and gallery.cover_photo.thumbnail_file %}{% photo_delivery_url gallery.cover_photo 'thumbnail' 'dashboard' as cover_url %}{% if cover_url %}<img src="{{ cover_url }}" alt="Portada de {{ gallery.title }}" loading="lazy">{% endif %}{% else %}<span>{{ gallery.title|first|upper }}</span><small>SIN PORTADA</small>{% endif %}<div class="cover-badges"><span class="status-badge status-{{ gallery.status|lower }}">{{ gallery.get_status_display }}</span><span class="status-badge">{% if gallery.visibility == 'PRIVATE_PIN' %}PIN{% elif gallery.visibility == 'UNLISTED' %}OCULTA{% else %}PÚBLICA{% endif %}</span>{% if gallery.ai_settings.enabled %}<span class="status-badge status-ai">AI</span>{% endif %}</div></a>
+      <div class="photographic-card-info"><div><a href="{% url 'galleries_dashboard:detail' gallery.uuid %}"><h2>{{ gallery.title }}</h2></a><p>{{ gallery.event_date|date:"d M Y"|upper|default:"SIN FECHA" }}</p><span>{{ gallery.photo_count }} FOTOGRAFÍA{{ gallery.photo_count|pluralize:"S" }}</span></div><div class="context-menu"><button type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Acciones para {{ gallery.title }}">•••</button><div class="context-menu-panel" role="menu"><a role="menuitem" href="{% url 'galleries_dashboard:detail' gallery.uuid %}">Ver</a><a role="menuitem" href="{% url 'galleries_dashboard:edit' gallery.uuid %}">Editar</a><button type="button" role="menuitem" data-copy-url="{% url 'galleries_dashboard:share' gallery.uuid %}">Copiar enlace</button>{% if gallery.status != 'ARCHIVED' %}<form method="post" action="{% url 'galleries_dashboard:archive' gallery.uuid %}">{% csrf_token %}<button role="menuitem" type="submit">Archivar</button></form>{% endif %}</div></div></div>
+    </article>
+    {% empty %}<div class="empty-state gallery-grid-empty"><span>00</span><h2>No hay galerías aquí.</h2><p>Cambia los filtros o crea una nueva historia.</p><a class="primary-link" href="{% url 'galleries_dashboard:create' %}">Crear galería</a></div>{% endfor %}
+  </div>
+</section>
+{% endblock %}

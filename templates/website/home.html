@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static media_delivery %}
+
+{% block title %}Mapache Studio · Imagen, tecnología y experiencias{% endblock %}
+{% block meta_description %}Producción fotográfica, audiovisual y tecnología para eventos. Galerías privadas, entregas inteligentes y Mapache AI en Guatemala.{% endblock %}
+{% block body_class %}public-page site-page{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{% static 'css/public-site.css' %}?v=9"><link rel="stylesheet" href="{% static 'css/home.css' %}?v=9">{% endblock %}
+
+{% block content %}
+{% include "website/partials/header.html" with active_page="home" %}
+<main>
+  <section class="master-hero" aria-labelledby="hero-title">
+    <div class="master-hero-media" data-hero-gallery>{% for gallery in latest_galleries %}{% photo_delivery_url gallery.cover_photo 'optimized' as hero_url %}{% photo_delivery_url gallery.cover_photo 'thumbnail' as hero_thumb_url %}<img class="master-hero-slide{% if forloop.first %} is-active{% endif %}" data-hero-slide src="{{ hero_url }}"{% if hero_thumb_url %} srcset="{{ hero_thumb_url }} 600w, {{ hero_url }} 2400w"{% endif %} sizes="100vw" alt="{{ gallery.title }} por Mapache Studio" width="{{ gallery.cover_photo.width|default:1600 }}" height="{{ gallery.cover_photo.height|default:1067 }}"{% if forloop.first %} fetchpriority="high"{% else %} loading="lazy"{% endif %} decoding="async">{% endfor %}{% if latest_galleries|length < 3 %}<img class="master-hero-slide{% if not latest_galleries %} is-active{% endif %}" data-hero-slide src="{% static 'images/public/produccion-estadio-1600.webp' %}" srcset="{% static 'images/public/produccion-estadio-800.webp' %} 800w, {% static 'images/public/produccion-estadio-1600.webp' %} 1600w" sizes="100vw" alt="Producción audiovisual de Mapache Studio en un estadio" width="1600" height="914"{% if not latest_galleries %} fetchpriority="high"{% else %} loading="lazy"{% endif %} decoding="async">{% endif %}{% if latest_galleries|length < 2 %}<img class="master-hero-slide" data-hero-slide src="{% static 'images/public/mapache-ai-estudio-1600.webp' %}" srcset="{% static 'images/public/mapache-ai-estudio-800.webp' %} 800w, {% static 'images/public/mapache-ai-estudio-1600.webp' %} 1600w" sizes="100vw" alt="Experiencia tecnológica de Mapache Studio" width="1600" height="853" loading="lazy" decoding="async">{% endif %}{% if latest_galleries|length < 1 %}<img class="master-hero-slide" data-hero-slide src="{% static 'images/public/hero-volcanes-1600.webp' %}" srcset="{% static 'images/public/hero-volcanes-800.webp' %} 800w, {% static 'images/public/hero-volcanes-1600.webp' %} 1600w" sizes="100vw" alt="Corredor en los volcanes de Guatemala al amanecer" width="1600" height="1067" loading="lazy" decoding="async">{% endif %}</div>
+    <div class="master-hero-overlay" aria-hidden="true"></div>
+    <div class="master-hero-content site-shell" data-reveal>
+      <p class="hero-kicker"><span></span> ESTUDIO CREATIVO + TECNOLOGÍA</p>
+      <h1 id="hero-title">Capturamos la esencia,<br><span>producimos la experiencia.</span></h1>
+      <p class="hero-intro">Fotografía, cine y una plataforma creada para convertir cada evento en una experiencia que permanece.</p>
+      <div class="hero-actions"><a class="cinematic-button" href="#capacidades">Explorar Mapache <span aria-hidden="true">→</span></a><a class="hero-secondary" href="{% url 'galleries_public:portfolio' %}">Encontrar mi evento</a></div>
+    </div>
+    <div class="hero-index" aria-hidden="true"><span>GUATEMALA</span><span data-hero-counter>01 / 03</span></div>
+    <a class="hero-scroll" href="#capacidades"><span>DESCUBRIR</span><b aria-hidden="true"></b></a>
+  </section>
+
+  <section class="home-proof" aria-label="Capacidades principales"><div class="home-shell"><span>FOTOGRAFÍA</span><i></i><span>VIDEO</span><i></i><span>DRONE</span><i></i><span>MAPACHE AI</span><i></i><span>ENTREGA DIGITAL</span></div></section>
+
+  <section class="home-capabilities" id="capacidades" aria-labelledby="capabilities-title">
+    <div class="home-shell">
+      <header class="home-editorial-heading" data-reveal><p class="site-eyebrow">01 / LO QUE HACEMOS</p><h2 id="capabilities-title">Una sola visión.<br><span>Todo el sistema.</span></h2><p>Diseñamos la imagen, producimos la historia y construimos la forma en que llega a cada persona.</p></header>
+      <div class="capability-list">
+        <a href="{% url 'website:services' %}" data-reveal><span>01</span><h3>Fotografía de acción</h3><p>El momento preciso, sin repetirlo.</p><b aria-hidden="true">↗</b></a>
+        <a href="{% url 'website:services' %}" data-reveal><span>02</span><h3>Producción audiovisual</h3><p>Narrativas de campaña, evento y marca.</p><b aria-hidden="true">↗</b></a>
+        <a href="{% url 'website:services' %}" data-reveal><span>03</span><h3>Cobertura aérea</h3><p>Escala y movimiento desde otra perspectiva.</p><b aria-hidden="true">↗</b></a>
+        <a href="#mapache-ai" data-reveal><span>04</span><h3>Experiencia tecnológica</h3><p>Galerías privadas, búsqueda inteligente y entrega.</p><b aria-hidden="true">↘</b></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="production-story" aria-labelledby="production-title">
+    <div class="production-image" data-reveal><img src="{% static 'images/public/produccion-estadio-1600.webp' %}" srcset="{% static 'images/public/produccion-estadio-800.webp' %} 800w, {% static 'images/public/produccion-estadio-1600.webp' %} 1600w" sizes="(max-width: 800px) 100vw, 58vw" alt="Producción audiovisual profesional durante un evento deportivo nocturno" width="1600" height="914" loading="lazy" decoding="async"></div>
+    <div class="production-copy" data-reveal><p class="site-eyebrow">02 / PRODUCCIÓN</p><h2 id="production-title">Del terreno<br>a la pantalla.</h2><p>Dirección, captura y postproducción bajo una misma intención. Menos ruido. Más precisión. Una entrega a la altura del proyecto.</p><dl><div><dt>01</dt><dd>Dirección creativa</dd></div><div><dt>02</dt><dd>Producción en campo</dd></div><div><dt>03</dt><dd>Postproducción y color</dd></div></dl><a class="site-arrow-link" href="{% url 'website:services' %}">Conocer los servicios <span aria-hidden="true">→</span></a></div>
+  </section>
+
+  <section class="ai-showcase" id="mapache-ai" aria-labelledby="ai-title">
+    <div class="ai-showcase-media"><img src="{% static 'images/public/mapache-ai-estudio-1600.webp' %}" srcset="{% static 'images/public/mapache-ai-estudio-800.webp' %} 800w, {% static 'images/public/mapache-ai-estudio-1600.webp' %} 1600w" sizes="100vw" alt="Estudio de postproducción con archivo fotográfico inteligente" width="1600" height="853" loading="lazy" decoding="async"><span aria-hidden="true"></span></div>
+    <div class="home-shell ai-showcase-content" data-reveal><p class="site-eyebrow">✦ MAPACHE AI</p><h2 id="ai-title">Miles de fotos.<br><span>La tuya, en segundos.</span></h2><p>Encuentra tus momentos con una foto o tu número de corredor. Privado, rápido y limitado exclusivamente a tu evento.</p><div class="ai-features"><span>ROSTRO</span><span>DORSAL</span></div>{% if ai_gallery %}<a class="cinematic-button" href="{% url 'mapache_ai_public:find_me' ai_gallery.slug %}">Probar Mapache AI <span aria-hidden="true">→</span></a>{% else %}<a class="cinematic-button" href="{% url 'galleries_public:portfolio' %}">Explorar eventos <span aria-hidden="true">→</span></a>{% endif %}</div>
+  </section>
+
+  <section class="home-deliveries" aria-labelledby="deliveries-title">
+    <div class="home-shell">
+      <header class="deliveries-heading" data-reveal><div><p class="site-eyebrow">03 / TRABAJO RECIENTE</p><h2 id="deliveries-title">Últimas Entregas<span>.</span></h2></div><a href="{% url 'galleries_public:portfolio' %}">Ver todos los eventos <span aria-hidden="true">→</span></a></header>
+      <div class="deliveries-grid">
+        {% for gallery in latest_galleries %}{% photo_delivery_url gallery.cover_photo 'optimized' as delivery_url %}{% photo_delivery_url gallery.cover_photo 'thumbnail' as delivery_thumb_url %}
+          <article class="delivery-card delivery-card-{{ forloop.counter }}" data-reveal><a href="{% url 'galleries_public:detail' gallery.slug %}"><img src="{{ delivery_url }}"{% if delivery_thumb_url %} srcset="{{ delivery_thumb_url }} 600w, {{ delivery_url }} 2400w" sizes="{% if forloop.first %}(min-width: 801px) 66vw, 100vw{% else %}(min-width: 801px) 34vw, 100vw{% endif %}"{% endif %} alt="Portada de {{ gallery.title }}" width="{{ gallery.cover_photo.width|default:1200 }}" height="{{ gallery.cover_photo.height|default:800 }}" loading="lazy" decoding="async"><span class="delivery-shade" aria-hidden="true"></span><span class="delivery-copy"><small>{{ gallery.event_date|date:'d.m.Y'|default:'MAPACHE' }}</small><strong>{{ gallery.title }}</strong><em>Ver evento ↗</em></span></a></article>
+        {% empty %}<article class="delivery-card delivery-card-1 delivery-placeholder" data-reveal><img src="{% static 'images/public/hero-volcanes-1600.webp' %}" alt="Corredor en un paisaje volcánico" width="1600" height="1067" loading="lazy"><span class="delivery-shade" aria-hidden="true"></span><span class="delivery-copy"><small>MAPACHE / 2026</small><strong>Historias en movimiento.</strong></span></article>{% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="experience-system" aria-labelledby="system-title"><div class="home-shell"><header data-reveal><p class="site-eyebrow">04 / DESPUÉS DEL EVENTO</p><h2 id="system-title">La experiencia no termina<br><span>cuando baja la cámara.</span></h2></header><ol><li data-reveal><span>01</span><strong>Selección y proceso</strong><p>Optimizamos cada archivo para que se vea impecable en cualquier pantalla.</p></li><li data-reveal><span>02</span><strong>Galería privada</strong><p>Una entrega editorial, segura y diseñada alrededor de la fotografía.</p></li><li data-reveal><span>03</span><strong>Búsqueda inteligente</strong><p>Cada participante encuentra sus momentos sin recorrer miles de imágenes.</p></li><li data-reveal><span>04</span><strong>Descarga inmediata</strong><p>Fotografías individuales o galerías completas, listas para conservar.</p></li></ol></div></section>
+
+  <section class="home-final-cta"><div class="home-shell" data-reveal><p class="site-eyebrow">TU PRÓXIMO PROYECTO</p><h2>Hagamos algo<br><span>que permanezca.</span></h2><div><p>Cuéntanos la idea. Nosotros construimos la imagen y la experiencia completa.</p><a class="cinematic-button" href="{% url 'website:contact' %}">Iniciar un proyecto <span aria-hidden="true">→</span></a></div></div></section>
+</main>
+{% include "website/partials/footer.html" %}
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/public-site.js' %}?v=2" defer></script>{% endblock %}

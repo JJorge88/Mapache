@@ -1,0 +1,23 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{% block meta_description %}Mapache Studio — Imagen, tecnología y experiencias que permanecen.{% endblock %}">
+  <meta name="theme-color" content="#101010">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Mapache Studio">
+  <meta property="og:title" content="Mapache Studio">
+  <meta property="og:description" content="Fotografía, producción audiovisual y tecnología para eventos.">
+  <meta property="og:image" content="{% static 'images/public/hero-volcanes-1600.webp' %}">
+  <link rel="icon" type="image/png" href="{% static 'images/mapache-studio-logo.png' %}">
+  <title>{% block title %}Mapache Studio{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  {% block styles %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  {% block content %}{% endblock %}
+  {% block scripts %}{% endblock %}
+</body>
+</html>

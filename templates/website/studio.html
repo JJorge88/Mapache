@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Estudio · Mapache Studio{% endblock %}
+{% block body_class %}public-page site-page{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{% static 'css/public-site.css' %}?v=8"><link rel="stylesheet" href="{% static 'css/public-pages.css' %}?v=8">{% endblock %}
+{% block content %}
+{% include "website/partials/header.html" with active_page="studio" %}
+<main>
+  <section class="studio-hero site-shell" aria-labelledby="studio-title"><div data-reveal><p class="site-eyebrow">EL ESTUDIO</p><h1 id="studio-title">Detrás de cada imagen<br><span>hay una intención.</span></h1></div><div class="studio-hero-image" data-reveal><img src="{% static 'images/public/equipo-altiplano-1600.webp' %}" srcset="{% static 'images/public/equipo-altiplano-800.webp' %} 800w, {% static 'images/public/equipo-altiplano-1600.webp' %} 1600w" sizes="(max-width: 800px) 100vw, 48vw" alt="Equipo de Mapache preparando una producción en el altiplano" width="1600" height="1067" fetchpriority="high" decoding="async"></div></section>
+  <section class="studio-statement site-shell" data-reveal><p class="site-eyebrow">QUIÉNES SOMOS</p><p>Mapache Studio observa el movimiento, encuentra el momento y lo convierte en una imagen capaz de permanecer.</p></section>
+  <section class="studio-process site-shell" aria-labelledby="process-title"><header data-reveal><p class="site-eyebrow">CÓMO TRABAJAMOS</p><h2 id="process-title">La precisión también<br>es una forma de mirar.</h2></header><div class="process-list"><article data-reveal><span>01</span><h3>Entender</h3><p>Comenzamos por el propósito, el contexto y la emoción que debe sostener la historia.</p></article><article data-reveal><span>02</span><h3>Observar</h3><p>Trabajamos cerca de la acción sin interrumpir aquello que la hace auténtica.</p></article><article data-reveal><span>03</span><h3>Construir</h3><p>Editamos con criterio para que cada entrega se sienta coherente, precisa y duradera.</p></article></div></section>
+  <section class="studio-philosophy"><div class="studio-philosophy-image"><img src="{% static 'images/public/hero-volcanes-1600.webp' %}" srcset="{% static 'images/public/hero-volcanes-800.webp' %} 800w, {% static 'images/public/hero-volcanes-1600.webp' %} 1600w" sizes="100vw" alt="Corredor atravesando un paisaje volcánico al amanecer" width="1600" height="1067" loading="lazy" decoding="async"></div><div class="site-shell" data-reveal><p class="site-eyebrow">FILOSOFÍA</p><h2>No perseguimos<br>el ruido.<br><span>Buscamos lo que queda.</span></h2></div></section>
+</main>
+{% include "website/partials/footer.html" %}
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/public-site.js' %}" defer></script>{% endblock %}

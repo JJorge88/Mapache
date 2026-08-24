@@ -1,0 +1,4 @@
+<nav class="ai-search-options" aria-label="Formas de búsqueda">
+  {% if gallery.ai_settings.face_search_enabled %}<a class="{% if active_search == 'face' %}is-active{% endif %}" href="{% url 'mapache_ai_public:find_me' gallery.slug %}"><span data-short="FOTO">CON UNA FOTO</span><p>Sube una foto donde podamos verte.</p></a>{% endif %}
+  {% if gallery.ai_settings.bib_search_enabled %}<a class="{% if active_search == 'bib' %}is-active{% endif %}" href="{% url 'mapache_ai_public:find_me_number' gallery.slug %}"><span data-short="NÚMERO">CON TU NÚMERO</span><p>¿Cuál era tu número?</p></a>{% endif %}
+</nav>

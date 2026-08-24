@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Descarga · {{ gallery.title }}{% endblock %}
+{% block body_class %}public-page site-page{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{% static 'css/public-site.css' %}"><link rel="stylesheet" href="{% static 'css/gallery-public.css' %}">{% endblock %}
+{% block content %}
+<main class="gallery-download-page" data-gallery-download data-status-url="{{ status_url }}" data-download-url="{{ download_url }}">
+  <header class="download-utility-header site-shell"><a class="site-wordmark" href="{% url 'website:home' %}">MAPACHE<span>.</span></a><a href="{% url 'galleries_public:detail' gallery.slug %}">Volver a la galería</a></header>
+  <section class="download-status-card site-shell">
+    <p class="site-eyebrow">DESCARGA / {{ gallery.title|upper }}</p>
+    <div data-download-processing{% if download.status != 'PENDING' and download.status != 'PROCESSING' %} hidden{% endif %}>
+      <h1>Preparando tu galería.</h1>
+      <p><strong data-download-processed>{{ download.processed_photos }}</strong> / <strong data-download-total>{{ download.photo_count }}</strong> fotografías</p>
+      <progress value="{{ download.processed_photos }}" max="{{ download.photo_count|default:1 }}" data-download-progress></progress>
+      <small>Puedes dejar esta página abierta. La descarga se prepara en segundo plano.</small>
+    </div>
+    <div data-download-ready{% if download.status != 'READY' %} hidden{% endif %}>
+      <h1>Tu galería está lista.</h1>
+      <p><strong data-ready-count>{{ download.photo_count }}</strong> fotografías · <strong data-ready-size>{{ download.file_size|filesizeformat }}</strong></p>
+      <p class="download-expiry" data-download-expiry>{% if download.expires_at %}Disponible hasta {{ download.expires_at|date:"d/m/Y H:i" }}{% endif %}</p>
+      <a class="download-ready-button" href="{{ download_url }}">Descargar ZIP <span aria-hidden="true">↓</span></a>
+    </div>
+    <div data-download-error{% if download.status != 'ERROR' and download.status != 'EXPIRED' %} hidden{% endif %}>
+      <h1>{% if download.status == 'EXPIRED' %}La descarga expiró.{% else %}No pudimos preparar la descarga.{% endif %}</h1>
+      <p>Intenta nuevamente para crear un paquete actualizado.</p>
+      <form method="post" action="{% url 'galleries_public:download_request' gallery.slug %}">{% csrf_token %}<button class="gallery-outline-button" type="submit">Intentar nuevamente</button></form>
+    </div>
+  </section>
+</main>
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/gallery-download.js' %}" defer></script>{% endblock %}

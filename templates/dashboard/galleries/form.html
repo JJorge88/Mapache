@@ -1,0 +1,57 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %}{% if mode == 'create' %}Nueva galería{% else %}Editar galería{% endif %} · Mapache{% endblock %}
+{% block dashboard_content %}
+<section class="gallery-page gallery-form-page">
+  <header class="page-heading">
+    <div><p class="home-kicker">GALERÍAS / {% if mode == 'create' %}NUEVA{% else %}EDITAR{% endif %}</p><h1>{% if mode == 'create' %}Nueva galería{% else %}Editar galería{% endif %}<span>.</span></h1></div>
+    <a class="secondary-link" href="{% if gallery %}{% url 'galleries_dashboard:detail' gallery.uuid %}{% else %}{% url 'galleries_dashboard:list' %}{% endif %}">Cancelar</a>
+  </header>
+  <form class="studio-form editorial-form" method="post" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="form-error">{{ form.non_field_errors|striptags }}</div>{% endif %}
+
+    <section class="form-chapter" aria-labelledby="chapter-information">
+      <header><span>01</span><div><p>INFORMACIÓN</p><h2 id="chapter-information">Define la historia.</h2></div></header>
+      <div class="form-chapter-fields form-grid">
+        <div class="form-field"><label for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>{{ form.title }}{% for error in form.title.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+        <div class="form-field"><label for="{{ form.event_date.id_for_label }}">{{ form.event_date.label }}</label>{{ form.event_date }}{% for error in form.event_date.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+        <div class="form-field full-field"><label for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>{{ form.description }}{% for error in form.description.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+      </div>
+    </section>
+
+    {% if mode == 'create' %}<section class="form-chapter" aria-labelledby="chapter-access">
+      <header><span>02</span><div><p>ACCESO</p><h2 id="chapter-access">Elige quién puede entrar.</h2></div></header>
+      <div class="form-chapter-fields form-grid">
+        <div class="form-field"><label for="{{ form.visibility.id_for_label }}">{{ form.visibility.label }}</label>{{ form.visibility }}{% for error in form.visibility.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+        <div class="form-field"><label for="{{ form.pin.id_for_label }}">PIN de acceso</label>{{ form.pin }}{% if form.pin.help_text %}<small>{{ form.pin.help_text }}</small>{% endif %}{% for error in form.pin.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+      </div>
+    </section>{% endif %}
+
+    <section class="form-chapter" aria-labelledby="chapter-downloads">
+      <header><span>0{% if mode == 'create' %}3{% else %}2{% endif %}</span><div><p>DESCARGAS</p><h2 id="chapter-downloads">Controla cada entrega.</h2></div></header>
+      <div class="form-chapter-fields option-fields">
+        <div class="form-field check-field">{{ form.allow_photo_download }}<label for="{{ form.allow_photo_download.id_for_label }}">{{ form.allow_photo_download.label }}</label>{% for error in form.allow_photo_download.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+        <div class="form-field check-field">{{ form.allow_gallery_download }}<label for="{{ form.allow_gallery_download.id_for_label }}">{{ form.allow_gallery_download.label }}</label>{% for error in form.allow_gallery_download.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+      </div>
+    </section>
+
+    <section class="form-chapter" aria-labelledby="chapter-publishing">
+      <header><span>0{% if mode == 'create' %}4{% else %}3{% endif %}</span><div><p>PUBLICACIÓN</p><h2 id="chapter-publishing">Decide dónde aparece.</h2></div></header>
+      <div class="form-chapter-fields option-fields">
+        <div class="form-field check-field">{{ form.show_in_portfolio }}<label for="{{ form.show_in_portfolio.id_for_label }}">{{ form.show_in_portfolio.label }}</label>{% for error in form.show_in_portfolio.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+        <div class="form-field check-field">{{ form.is_featured }}<label for="{{ form.is_featured.id_for_label }}">{{ form.is_featured.label }}</label>{% for error in form.is_featured.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+      </div>
+    </section>
+
+    <section class="form-chapter form-chapter-ai" aria-labelledby="chapter-ai">
+      <header><span>0{% if mode == 'create' %}5{% else %}4{% endif %}</span><div><p>✦ MAPACHE AI</p><h2 id="chapter-ai">Prepara la búsqueda.</h2></div></header>
+      <div class="form-chapter-fields">{% if mode == 'create' %}<div class="option-fields"><div class="form-field check-field">{{ form.enable_mapache_ai }}<label for="{{ form.enable_mapache_ai.id_for_label }}">{{ form.enable_mapache_ai.label }}</label>{% if form.enable_mapache_ai.help_text %}<small>{{ form.enable_mapache_ai.help_text }}</small>{% endif %}{% for error in form.enable_mapache_ai.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div></div>{% else %}<p>Activa o ajusta la búsqueda por rostro y dorsal para este evento.</p><a class="secondary-link" href="{% url 'mapache_ai_dashboard:settings' gallery.uuid %}">Configurar Mapache AI</a>{% endif %}</div>
+    </section>
+
+    <div class="form-actions"><button class="primary-link" type="submit">{% if mode == 'create' %}Crear galería{% else %}Guardar cambios{% endif %} <span>→</span></button></div>
+  </form>
+</section>
+{% endblock %}
+{% block scripts %}{{ block.super }}<script src="{% static 'js/gallery-form.js' %}" defer></script>{% endblock %}

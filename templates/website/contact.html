@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Contacto · Mapache Studio{% endblock %}
+{% block meta_description %}Cuéntanos sobre tu evento, campaña o proyecto audiovisual. Mapache Studio produce imagen y tecnología desde Guatemala.{% endblock %}
+{% block body_class %}public-page site-page{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{% static 'css/public-site.css' %}?v=8"><link rel="stylesheet" href="{% static 'css/public-pages.css' %}?v=8">{% endblock %}
+{% block content %}
+{% include "website/partials/header.html" with active_page="contact" %}
+<main class="contact-v2">
+  <header class="contact-v2-heading site-shell"><div><p class="site-eyebrow">CONTACTO</p><h1>Hagamos que tu<br><span>proyecto destaque.</span></h1></div><div class="contact-v2-intro"><p>Cuéntanos qué quieres construir. La conversación es el primer paso.</p><span>GUATEMALA · PRODUCCIÓN · TECNOLOGÍA</span></div></header>
+
+  {% if messages %}<div class="contact-messages site-shell" role="status" aria-live="polite">{% for message in messages %}<p>{{ message }}</p>{% endfor %}</div>{% endif %}
+
+  <section class="contact-v2-layout site-shell" aria-label="Contacto con Mapache Studio">
+    <div class="contact-v2-form-panel">
+      <header><span>01</span><div><p>CUÉNTANOS TU IDEA</p><h2>Detalles del proyecto.</h2></div></header>
+      <form class="public-contact-form" method="post" novalidate>
+        {% csrf_token %}{{ form.website }}
+        {% if form.non_field_errors %}<div class="form-wide-error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+        <div class="public-field"><label for="{{ form.name.id_for_label }}">Nombre</label>{{ form.name }}{{ form.name.errors }}</div>
+        <div class="public-field"><label for="{{ form.email.id_for_label }}">Correo electrónico</label>{{ form.email }}{{ form.email.errors }}</div>
+        <div class="public-field"><label for="{{ form.phone.id_for_label }}">Teléfono <span>opcional</span></label>{{ form.phone }}{{ form.phone.errors }}</div>
+        <div class="public-field"><label for="{{ form.service.id_for_label }}">Servicio</label>{{ form.service }}{{ form.service.errors }}</div>
+        <div class="public-field is-full"><label for="{{ form.message.id_for_label }}">Mensaje</label>{{ form.message }}{{ form.message.errors }}</div>
+        <div class="contact-submit is-full"><button type="submit">Enviar proyecto <span aria-hidden="true">→</span></button><p>Tu información se utiliza únicamente para responder esta consulta.</p></div>
+      </form>
+    </div>
+    <aside class="contact-v2-aside"><div class="contact-aside-image"><img src="{% static 'images/public/equipo-altiplano-800.webp' %}" alt="Equipo audiovisual preparando una producción" width="800" height="533" loading="lazy"></div><div><p class="site-eyebrow">MAPACHE STUDIO</p><h2>Guatemala</h2><p>Fotografía, cine, drone y tecnología de entrega para historias que necesitan permanecer.</p></div><dl><div><dt>PROYECTOS</dt><dd>Fotografía y producción integral</dd></div><div><dt>EVENTOS</dt><dd>Galerías y experiencias privadas</dd></div><div><dt>DISPONIBILIDAD</dt><dd>Guatemala y proyectos especiales</dd></div></dl></aside>
+  </section>
+</main>
+{% include "website/partials/footer.html" %}
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/public-site.js' %}" defer></script>{% endblock %}

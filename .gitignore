@@ -1,0 +1,13 @@
+.env
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+media/*
+!media/.gitkeep
+staticfiles/*
+!staticfiles/.gitkeep
+*.py[cod]
+.DS_Store
+.coverage
+htmlcov/

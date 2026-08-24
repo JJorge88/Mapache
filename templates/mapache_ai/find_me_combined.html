@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Foto y número · {{ gallery.title }}{% endblock %}
+{% block body_class %}public-page site-page ai-public-page{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{% static 'css/public-site.css' %}"><link rel="stylesheet" href="{% static 'css/mapache-ai.css' %}">{% endblock %}
+{% block content %}
+{% include "mapache_ai/partials/public_header.html" %}
+<main class="ai-public-main site-shell">
+  <section class="ai-public-hero ai-public-hero-compact"><p class="site-eyebrow">✦ MAPACHE AI</p><h1>Encuentra<br>tu momento.</h1><p>Miles de fotografías.<br>Una puede ser la tuya.</p></section>
+  {% include "mapache_ai/partials/search_options.html" with active_search="combined" %}
+  <section class="ai-search-workspace" aria-labelledby="combined-title">
+    <div class="ai-workspace-copy"><p class="site-eyebrow">FOTO + NÚMERO</p><h2 id="combined-title">Una foto.<br>Un número.<br>Más precisión.</h2><details><summary>Privacidad y uso de tus datos</summary><p>Tu imagen se procesa temporalmente y no se guarda. El número no se vincula a un nombre ni crea un perfil.</p></details></div>
+    <form class="ai-editorial-form ai-combined-form" method="post" enctype="multipart/form-data" data-face-search-form>{% csrf_token %}
+      {% if unavailable %}<div class="ai-unavailable"><strong>Esta búsqueda no está disponible en este momento.</strong><p>Las búsquedas independientes y la galería continúan disponibles.</p></div>{% endif %}
+      {% if form.non_field_errors %}<div class="ai-form-error" role="alert">{{ form.non_field_errors|striptags }}</div>{% endif %}
+      <label class="face-upload face-upload-compact" for="{{ form.query_image.id_for_label }}"><span aria-hidden="true">＋</span><strong>Seleccionar fotografía</strong><small>JPEG, PNG o WebP · máximo {{ query_max_mb }} MB</small>{{ form.query_image }}</label>{% if form.query_image.errors %}<div class="ai-form-error">{{ form.query_image.errors|striptags }}</div>{% endif %}
+      <label class="combined-number" for="{{ form.query_number.id_for_label }}"><span>TU NÚMERO</span>{{ form.query_number }}</label>{% if form.query_number.errors %}<div class="ai-form-error">{{ form.query_number.errors|striptags }}</div>{% endif %}
+      <label class="consent-check">{{ form.consent }}<span>Usaremos esta imagen únicamente para buscar coincidencias dentro de este evento.</span></label>{% if form.consent.errors %}<div class="ai-form-error">{{ form.consent.errors|striptags }}</div>{% endif %}
+      <button class="ai-primary-button" type="submit">ENCONTRAR MIS FOTOS <span aria-hidden="true">→</span></button>
+      <div class="ai-searching" data-searching hidden><span class="ai-search-line" aria-hidden="true"></span><strong>Estamos buscándote.</strong><p>Comparando tu foto y número<br>con el evento…</p></div>
+    </form>
+  </section>
+</main>
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/mapache-ai-search.js' %}" defer></script>{% endblock %}

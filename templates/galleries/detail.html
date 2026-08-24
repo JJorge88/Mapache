@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static media_delivery %}
+
+{% block title %}{{ gallery.title }} · Mapache Studio{% endblock %}
+{% block body_class %}public-page site-page gallery-client-page{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{% static 'css/public-site.css' %}?v=9"><link rel="stylesheet" href="{% static 'css/gallery-public.css' %}?v=9">{% endblock %}
+{% block content %}
+{% include "website/partials/header.html" %}
+<main>
+  {% if gallery.cover_photo %}{% photo_delivery_url gallery.cover_photo 'optimized' as cover_url %}{% photo_delivery_url gallery.cover_photo 'thumbnail' as cover_thumb_url %}{% endif %}
+  <section class="gallery-hero{% if not cover_url %} gallery-hero-empty{% endif %}" aria-labelledby="gallery-title">
+    {% if cover_url %}<img class="gallery-hero-image" src="{{ cover_url }}"{% if cover_thumb_url %} srcset="{{ cover_thumb_url }} 600w, {{ cover_url }} 2400w" sizes="100vw"{% endif %} alt="Portada de {{ gallery.title }}" width="{{ gallery.cover_photo.width|default:1600 }}" height="{{ gallery.cover_photo.height|default:1000 }}" fetchpriority="high" decoding="async">{% endif %}
+    <div class="gallery-hero-overlay" aria-hidden="true"></div>
+    <div class="site-shell gallery-hero-content">
+      <p class="site-eyebrow">MAPACHE / GALERÍA</p>
+      <h1 id="gallery-title">{{ gallery.title }}</h1>
+      <div class="gallery-hero-meta">
+        <p>{% if gallery.event_date %}{{ gallery.event_date|date:"d M Y"|upper }}{% else %}MAPACHE STUDIO{% endif %}</p>
+        <p>{{ photo_count }} FOTOGRAFÍA{{ photo_count|pluralize:"S" }}</p>
+      </div>
+    </div>
+  </section>
+
+  {% if ai_search_available %}<section class="gallery-ai-callout" aria-labelledby="gallery-ai-title">
+    <div class="site-shell gallery-ai-callout-grid">
+      <div class="gallery-ai-copy"><p class="site-eyebrow">✦ MAPACHE AI</p><h2 id="gallery-ai-title">¿Quieres encontrar tus fotos?</h2><p>Busca dentro de este evento usando una foto o tu número.</p></div>
+      {% if gallery.ai_settings.face_search_enabled %}<a class="gallery-primary-link" href="{% url 'mapache_ai_public:find_me' gallery.slug %}">BUSCAR MIS FOTOS <span aria-hidden="true">→</span></a>{% else %}<a class="gallery-primary-link" href="{% url 'mapache_ai_public:find_me_number' gallery.slug %}">BUSCAR MIS FOTOS <span aria-hidden="true">→</span></a>{% endif %}
+    </div>
+  </section>{% endif %}
+
+  <section class="gallery-photographs site-shell" id="galeria" aria-labelledby="photographs-title">
+    <header class="gallery-photographs-header">
+      <div><p class="site-eyebrow">LA HISTORIA COMPLETA</p><h2 id="photographs-title">Fotografías.</h2></div>
+      {% if gallery.allow_gallery_download %}<form id="gallery-download" method="post" action="{% url 'galleries_public:download_request' gallery.slug %}">{% csrf_token %}<button class="gallery-outline-button" type="submit">Descargar galería <span aria-hidden="true">↓</span></button></form>{% endif %}
+    </header>
+    <div class="gallery-masonry" data-gallery-lightbox-root aria-label="Fotografías de {{ gallery.title }}">
+      {% for photo in photos %}{% photo_delivery_url photo 'optimized' as optimized_url %}{% photo_delivery_url photo 'thumbnail' as thumbnail_url %}{% if optimized_url %}<figure class="gallery-masonry-item gallery-photo-{{ photo.orientation|lower }} public-photo-{{ photo.orientation|lower }}" data-photo-reveal>
+        <button class="gallery-photo-open" type="button" data-lightbox-item data-image-url="{{ optimized_url }}" data-image-alt="Fotografía {{ forloop.counter }} de {{ gallery.title }}"{% if gallery.allow_photo_download %} data-download-url="{% url 'galleries_public:photo_download' gallery.slug photo.uuid %}"{% endif %} aria-label="Abrir fotografía {{ forloop.counter }}" aria-pressed="false">
+          <img src="{{ thumbnail_url|default:optimized_url }}"{% if thumbnail_url %} srcset="{{ thumbnail_url }} 600w, {{ optimized_url }} 1600w" sizes="(min-width: 1280px) 25vw, (min-width: 720px) 33vw, 50vw"{% endif %} alt="Fotografía de {{ gallery.title }}" loading="lazy" decoding="async" width="{{ photo.width|default:4 }}" height="{{ photo.height|default:3 }}">
+        </button>
+        {% if gallery.allow_photo_download %}<figcaption><a href="{% url 'galleries_public:photo_download' gallery.slug photo.uuid %}">Descargar</a></figcaption>{% endif %}
+      </figure>{% endif %}{% empty %}<div class="gallery-empty"><p>Esta historia todavía no contiene fotografías listas.</p></div>{% endfor %}
+    </div>
+  </section>
+  <section class="gallery-trust" aria-labelledby="gallery-trust-title"><div class="site-shell" data-reveal><p class="site-eyebrow">PRIVACIDAD MAPACHE</p><h2 id="gallery-trust-title">Tus recuerdos.<br><span>Tu privacidad.</span></h2><p>Las fotografías utilizadas para buscarte se procesan temporalmente y no se almacenan como parte de la galería.</p><div><span>PROCESAMIENTO TEMPORAL</span><span>SOLO ESTE EVENTO</span><span>SIN PERFILES</span></div></div></section>
+</main>
+
+{% include "galleries/partials/lightbox.html" %}
+{% include "galleries/partials/mobile_gallery_nav.html" with mobile_active="gallery" %}
+{% include "website/partials/footer.html" %}
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/public-site.js' %}?v=2" defer></script><script src="{% static 'js/gallery-public.js' %}?v=2" defer></script>{% endblock %}

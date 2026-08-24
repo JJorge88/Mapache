@@ -1,0 +1,18 @@
+{% load static %}
+<header class="site-header" data-site-header>
+  <div class="site-shell site-header-inner">
+    <a class="site-wordmark" href="{% url 'website:home' %}" aria-label="Mapache Studio, inicio"><img src="{% static 'images/mapache-studio-logo.png' %}" alt="" width="849" height="1117"></a>
+    <button class="site-menu-toggle" type="button" aria-expanded="false" aria-controls="site-navigation" data-menu-toggle><span data-menu-label>MENÚ</span></button>
+    <div class="site-navigation" id="site-navigation" data-site-navigation>
+      <nav aria-label="Navegación principal">
+        <a class="{% if active_page == 'home' %}is-active{% endif %}" href="{% url 'website:home' %}">INICIO</a>
+        <a class="{% if active_page == 'services' %}is-active{% endif %}" href="{% url 'website:services' %}">SERVICIOS</a>
+        <a class="{% if active_page == 'studio' %}is-active{% endif %}" href="{% url 'website:studio' %}">ESTUDIO</a>
+        <a class="{% if active_page == 'events' %}is-active{% endif %}" href="{% url 'galleries_public:portfolio' %}">EVENTOS</a>
+        <a class="{% if active_page == 'contact' %}is-active{% endif %}" href="{% url 'website:contact' %}">CONTACTO</a>
+      </nav>
+      <div class="site-menu-footer"><a href="{% url 'accounts:dashboard' %}">Panel de estudio</a><a href="{% url 'galleries_public:portfolio' %}">Ver eventos ↗</a></div>
+    </div>
+    <a class="studio-panel-link" href="{% url 'website:contact' %}">COTIZAR</a>
+  </div>
+</header>

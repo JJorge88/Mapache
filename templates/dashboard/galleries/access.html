@@ -1,0 +1,17 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Acceso · {{ gallery.title }}{% endblock %}
+{% block dashboard_content %}
+<section class="gallery-page narrow-page">
+  <header class="page-heading"><div><p class="home-kicker">{{ gallery.title|upper }} / ACCESO</p><h1>Privacidad<span>.</span></h1></div><a class="secondary-link" href="{% url 'galleries_dashboard:detail' gallery.uuid %}">Volver</a></header>
+  <div class="access-note"><span>PIN</span><div><strong>{% if gallery.has_pin %}PIN configurado{% else %}Sin PIN configurado{% endif %}</strong><p>Nunca mostramos ni almacenamos el PIN original.</p></div></div>
+  <form class="studio-form" method="post" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="form-error">{{ form.non_field_errors|striptags }}</div>{% endif %}
+    <div class="form-grid">
+      {% for field in form %}<div class="form-field{% if field.field.widget.input_type == 'checkbox' %} check-field{% endif %}">{% if field.field.widget.input_type == 'checkbox' %}{{ field }} <label for="{{ field.id_for_label }}">{{ field.label }}</label>{% else %}<label for="{{ field.id_for_label }}">{% if field.name == 'pin' and gallery.has_pin %}Cambiar PIN{% else %}{{ field.label }}{% endif %}</label>{{ field }}{% endif %}{% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}{% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>{% endfor %}
+    </div>
+    <div class="form-actions"><button class="primary-link" type="submit">Guardar acceso <span>→</span></button></div>
+  </form>
+</section>
+{% endblock %}
